@@ -8,7 +8,6 @@ const server = http.Server(app);
 const io = socketio(server);
 server.listen(port);
 
-app.use(express.static("public"));
 console.log(
   "\x1b[32;2m%s\x1b[0m",
   `Server running on http://localhost:${port}`

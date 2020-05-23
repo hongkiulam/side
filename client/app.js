@@ -30,8 +30,8 @@ const onError = (error) => {
  * Signalling server
  ****************************************************************************/
 
-// >> connect to socket >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-const socket = io();
+// >> connect to socket >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>asdasd
+const socket = io("http://localhost:3030/");
 let otherUser;
 let isAlreadyCalling = false;
 let callAccepted = false;
