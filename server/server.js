@@ -5,7 +5,7 @@ const socketio = require("socket.io");
 const app = express();
 const port = process.env.PORT | 3030;
 const server = http.Server(app);
-const io = socketio(server);
+const io = socketio(server, { origins: "*:*" });
 server.listen(port);
 
 console.log(
