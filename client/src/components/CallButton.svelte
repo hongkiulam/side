@@ -10,7 +10,6 @@
   import getMedia from "../utils/getMedia.js";
   import makeOffer from "../utils/makeOffer.js";
   import closeVideoCall from "../utils/closeVideoCall.js";
-  export let recipient;
   export let socketId;
 
   const handleClick = () => {
@@ -21,24 +20,18 @@
     }
   };
   const callUser = async () => {
-    if ($nickName == recipient) {
-      return alert(`Can't call yourself!`);
-    }
-    // callConnected = true;
     call.set({ ...$call, user: socketId, state: "connecting" });
     await getMedia(localStream, $pc, call);
     const offer = await $pc.createOffer();
     await $pc.setLocalDescription(new RTCSessionDescription(offer));
     makeOffer($socket, socketId, offer, $nickName);
+    // timer to check id we have remote description after x time, if so call failed and we reset call variable
   };
 
   const hangup = () => {
     $socket.emit("closeVideoCall", $call.user);
     $localStream.getTracks().forEach(track => track.stop());
     closeVideoCall(call, $pc, pc);
-    // isAlreadyCalling = false;
-    // callAccepted = false;
-    // callConnected = false;
   };
 </script>
 
@@ -51,6 +44,7 @@
     background: green;
     transition: all 0.3s ease;
     border: none;
+    cursor: pointer;
   }
   .connected {
     transform: rotate(-135deg);

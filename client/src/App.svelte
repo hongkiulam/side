@@ -3,9 +3,9 @@
   import getMedia from "./utils/getMedia.js";
   import makeAnswer from "./utils/makeAnswer.js";
   import makeOffer from "./utils/makeOffer.js";
-  import closeVideoCall from './utils/closeVideoCall.js';
+  import closeVideoCall from "./utils/closeVideoCall.js";
   import Users from "./components/Users.svelte";
-  import Videos from "./components/Videos.svelte";
+  import VideoContainer from "./components/VideoContainer.svelte";
 
   // get nickName
   // let nickNameFromPrompt = prompt("Enter Nickname");
@@ -19,10 +19,15 @@
 
   // Receive offer
   $socket.on("receiveOffer", async ({ offer, from, nickName }) => {
+    // if already in call, disconnect other person
+    if ($call.state == "connected") {
+      $socket.emit("alreadyInCall", from);
+      return;
+    }
+    // show confirm prompt when disconnected
     let callAccepted =
-      $call.state == "disconnected"
-        ? confirm(`Call from ${nickName}\nAccept call?`)
-        : true;
+      $call.state != "disconnected" ||
+      confirm(`Call from ${nickName}\nAccept call?`);
     if (callAccepted) {
       if ($call.state == "connecting") {
         call.set({ ...$call, state: "connected" });
@@ -37,8 +42,6 @@
     } else {
       $socket.emit("closeVideoCall", from);
       call.set({ ...$call, state: "disconnected", user: undefined });
-      // closeVideoCall();
-      // socket.emit("closeVideoCall", otherUser);
     }
   });
   $socket.on("receiveAnswer", async ({ answer, from }) => {
@@ -52,8 +55,12 @@
   });
 
   $socket.on("closeVideoCall", () => {
-    closeVideoCall(call,$pc,pc);
+    closeVideoCall(call, $pc, pc);
   });
+  $socket.on('otherPersonInCall',()=>{
+    closeVideoCall(call,$pc,pc);
+    alert('This person is already in a call!')
+  })
 </script>
 
 <style>
@@ -80,5 +87,5 @@
 <main>
   <h1>Side Video Chat!</h1>
   <Users />
-  <Videos />
+  <VideoContainer />
 </main>
