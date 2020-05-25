@@ -5,7 +5,19 @@ const socketio = require("socket.io");
 const app = express();
 const port = process.env.PORT | 3030;
 const server = http.Server(app);
-const io = socketio(server, { origins: "*:*" });
+
+const corsOptions = {
+  handlePreflightRequest: (req, res) => {
+    const headers = {
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "Access-Control-Allow-Origin": req.headers.origin, //or the specific origin you want to give access to,
+      "Access-Control-Allow-Credentials": true,
+    };
+    res.writeHead(200, headers);
+    res.end();
+  },
+};
+const io = socketio(server, corsOptions);
 server.listen(port);
 
 console.log(
