@@ -51,6 +51,10 @@ io.on("connection", (socket) => {
   socket.on("closeVideoCall", (socketId) => {
     socket.to(socketId).emit("closeVideoCall");
   });
+  // handle if someone is already in call
+  socket.on("alreadyInCall", (socketId) => {
+    socket.to(socketId).emit("otherPersonInCall");
+  });
 
   socket.on("disconnect", () => {
     members = members.filter((member) => member.socketId != socket.id);
