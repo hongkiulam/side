@@ -57,10 +57,10 @@
   $socket.on("closeVideoCall", () => {
     closeVideoCall(call, $pc, pc);
   });
-  $socket.on('otherPersonInCall',()=>{
-    closeVideoCall(call,$pc,pc);
-    alert('This person is already in a call!')
-  })
+  $socket.on("otherPersonInCall", () => {
+    closeVideoCall(call, $pc, pc);
+    alert("This person is already in a call!");
+  });
 </script>
 
 <style>
@@ -71,10 +71,27 @@
   }
   :global(*) {
     font-size: 16px;
+    font-family: "Cairo", sans-serif;
   }
   :global(:root) {
     --paddingS: 0.5em;
     --padding: 1em;
+    --baseGreen: #5ab188;
+    --darkBlue: #00717a;
+    --lightBlue: #c7f1f5;
+    --offWhite: #fffaf0;
+    --offBlack: #383838;
+    --callGreen: #4da515;
+    --callRed: #a51515;
+  }
+  .grid {
+    padding: var(--padding);
+    color: #333;
+    background: var(--baseGreen);
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: minmax(300px, 3fr) 7fr;
   }
 </style>
 
@@ -82,10 +99,17 @@
   <script src="https://webrtc.github.io/adapter/adapter-latest.js">
 
   </script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap"
+    rel="stylesheet" />
 </svelte:head>
 
-<main>
-  <h1>Side Video Chat!</h1>
-  <Users />
-  <VideoContainer />
-</main>
+<div class="grid">
+  <div class="menu">
+    <h1>Side Video Chat!</h1>
+  </div>
+  <div class="app">
+    <Users />
+    <VideoContainer />
+  </div>
+</div>
