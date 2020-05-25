@@ -12,8 +12,15 @@
 </script>
 
 <style>
-
+  .container {
+    background: white;
+    padding: var(--paddingS);
+    border-radius: 2em;
+    position:relative;
+  }
 </style>
 
-<Video stream={$localStream} />
-<Video stream={remoteStream} />
+<div class="container">
+  <Video stream={$localStream} type="local"/>
+  <Video stream={remoteStream} type="remote"/>
+</div>

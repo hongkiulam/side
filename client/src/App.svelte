@@ -12,8 +12,11 @@
   // while (nickNameFromPrompt == "") {
   //   nickNameFromPrompt = prompt("Enter Nickname");
   // }
-  nickName.set(Math.random().toString());
-
+  nickName.set(
+    Math.random()
+      .toString(36)
+      .substring(7)
+  );
   // join server
   $socket.emit("join", $nickName);
 
@@ -91,7 +94,20 @@
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-columns: minmax(300px, 3fr) 7fr;
+    grid-template-columns: minmax(300px, 2fr) 10fr;
+  }
+  h1 {
+    padding: 0 1rem;
+    font-size: 2.5em;
+    color: white;
+  }
+  .app {
+    background: var(--offWhite);
+    border-radius: 2.5em;
+    padding: var(--paddingS);
+    display: grid;
+    grid-template-columns: minmax(300px, 2fr) 8fr;
+    gap: var(--paddingS);
   }
 </style>
 
@@ -106,7 +122,7 @@
 
 <div class="grid">
   <div class="menu">
-    <h1>Side Video Chat!</h1>
+    <h1>Side</h1>
   </div>
   <div class="app">
     <Users />

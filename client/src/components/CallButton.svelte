@@ -12,6 +12,9 @@
   import closeVideoCall from "../utils/closeVideoCall.js";
   export let socketId;
   export let isSelf;
+  export let hover;
+
+  $: connected = $call.state == "connected" && $call.user == socketId;
 
   const handleClick = () => {
     if ($call.state == "disconnected") {
@@ -41,10 +44,17 @@
     padding: var(--paddingS);
     place-items: center;
     border-radius: 50%;
-    background: var(--callGreen);
+    background: white;
     transition: all 0.3s ease;
     border: none;
     cursor: pointer;
+  }
+  button:focus {
+    outline: none;
+  }
+
+  .hover {
+    background: var(--callGreen);
   }
   .connected {
     transform: rotate(-135deg);
@@ -61,20 +71,24 @@
   .phone {
     transform: rotate(-90deg);
   }
+  svg {
+    transition: all 0.3s ease;
+  }
 </style>
 
 <button
   on:click={handleClick}
-  class:connected={$call.state == 'connected' && $call.user == socketId}
+  class:connected
   class:disabled={$call.state == 'connected' && $call.user != socketId}
-  class:isSelf>
+  class:isSelf
+  class:hover>
   <svg
     viewbox="0 0 24 24"
     width="24px"
     height="24px"
     class="phone"
-    stroke="white"
-    fill="white">
+    stroke={hover || connected ? 'white' : 'var(--callGreen'}
+    fill={hover || connected ? 'white' : 'var(--callGreen'}>
 
     {@html $fIcons.phone}
   </svg>
