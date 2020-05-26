@@ -1,6 +1,6 @@
 <script>
   import { call } from "../store/store.js";
-  import isChildInParent from "../utils/isChildInParent.js";
+  import childOutsideParent from "../utils/childOutsideParent.js";
   export let stream;
   /**
    * @type 'local' | 'remote'
@@ -36,6 +36,14 @@
       dragPos.startX = e.clientX;
       dragPos.startY = e.clientY;
     }
+
+    // when mouseup, reset pos of video to inside bounds
+    if (!isMouseDown) {
+      childOutsideParent(el, el.parentNode).forEach(bound => {
+        el.style[bound.boundingSide] =
+          el[bound.offset] + bound.resetIncrement + "px";
+      });
+    }
   };
   const handleMouseMove = e => {
     if (isMouseDown) {
@@ -45,11 +53,9 @@
       // set next pos values
       dragPos.startX = e.clientX;
       dragPos.startY = e.clientY;
-      // if (isChildInParent(el, el.parentNode)) {
       // style
       el.style.left = e.target.offsetLeft - dragPos.incrementX + "px";
       el.style.top = e.target.offsetTop - dragPos.incrementY + "px";
-      // }
     }
   };
 </script>
@@ -68,6 +74,12 @@
     right: 1em;
     width: min(200px, 90%);
     z-index: 5;
+  }
+  .local:active {
+    cursor: grab;
+  }
+  .local:not(:active) {
+    transition: all 0.3s ease;
   }
   .remote {
     width: 100%;

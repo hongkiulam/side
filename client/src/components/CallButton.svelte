@@ -15,6 +15,7 @@
   export let hover;
 
   $: connected = $call.state == "connected" && $call.user == socketId;
+  $: connecting = $call.state == "connecting" && $call.user == socketId;
 
   const handleClick = () => {
     if ($call.state == "disconnected") {
@@ -60,6 +61,11 @@
     transform: rotate(-135deg);
     background: var(--callRed);
   }
+  .connecting {
+    transform: rotate(-135deg);
+    background: var(--callRed);
+    animation: connecting 0.3s infinite alternate 0.4s;
+  }
   .isSelf {
     opacity: 0.5;
     pointer-events: none;
@@ -74,11 +80,27 @@
   svg {
     transition: all 0.3s ease;
   }
+
+  @keyframes connecting {
+    0% {
+      transform: rotate(-135deg);
+    }
+    20% {
+      transform: rotate(-130deg);
+    }
+    60% {
+      transform: rotate(-140deg);
+    }
+    80% {
+      transform: rotate(-135deg);
+    }
+  }
 </style>
 
 <button
   on:click={handleClick}
   class:connected
+  class:connecting
   class:disabled={$call.state == 'connected' && $call.user != socketId}
   class:isSelf
   class:hover>
@@ -87,8 +109,8 @@
     width="24px"
     height="24px"
     class="phone"
-    stroke={hover || connected ? 'white' : 'var(--callGreen'}
-    fill={hover || connected ? 'white' : 'var(--callGreen'}>
+    stroke={hover || connected || connecting ? 'white' : 'var(--callGreen'}
+    fill={hover || connected || connecting ? 'white' : 'var(--callGreen'}>
 
     {@html $fIcons.phone}
   </svg>
