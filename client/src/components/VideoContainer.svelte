@@ -58,7 +58,5 @@
   {:else}
     <p>Click on someone's name to start a call ~</p>
   {/if}
-  <div
-    class="curtain"
-    class:curtainOpen={$call.state != 'disconnected'} />
+  <div class="curtain" class:curtainOpen={$call.state != 'disconnected'} />
 </div>

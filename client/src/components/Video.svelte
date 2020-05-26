@@ -1,5 +1,5 @@
 <script>
-  import { call } from "../store/store.js";
+  import { call, fIcons } from "../store/store.js";
   import childOutsideParent from "../utils/childOutsideParent.js";
   export let stream;
   /**
@@ -8,6 +8,9 @@
   export let type;
 
   let el; // instance of this element
+  let videoWrapper;
+  let isVideoOff = false;
+  let isMuted = false;
 
   $: if (el && el.srcObject != stream && stream) {
     el.srcObject = stream;
@@ -39,10 +42,12 @@
 
     // when mouseup, reset pos of video to inside bounds
     if (!isMouseDown) {
-      childOutsideParent(el, el.parentNode).forEach(bound => {
-        el.style[bound.boundingSide] =
-          el[bound.offset] + bound.resetIncrement + "px";
-      });
+      childOutsideParent(videoWrapper, videoWrapper.parentNode).forEach(
+        bound => {
+          videoWrapper.style[bound.boundingSide] =
+            videoWrapper[bound.offset] + bound.resetIncrement + "px";
+        }
+      );
     }
   };
   const handleMouseMove = e => {
@@ -54,44 +59,98 @@
       dragPos.startX = e.clientX;
       dragPos.startY = e.clientY;
       // style
-      el.style.left = e.target.offsetLeft - dragPos.incrementX + "px";
-      el.style.top = e.target.offsetTop - dragPos.incrementY + "px";
+      videoWrapper.style.left =
+        videoWrapper.offsetLeft - dragPos.incrementX + "px";
+      videoWrapper.style.top =
+        videoWrapper.offsetTop - dragPos.incrementY + "px";
     }
+  };
+
+  const toggleVideo = () => {
+    el.srcObject.getVideoTracks().forEach(v => (v.enabled = !v.enabled));
+    isVideoOff = !isVideoOff;
+  };
+  const toggleAudio = () => {
+    el.srcObject.getAudioTracks().forEach(a => (a.enabled = !a.enabled));
+    isMuted = !isMuted;
   };
 </script>
 
 <style>
+  .video_wrapper {
+    display: flex;
+    border-radius: 1em;
+    overflow: hidden;
+    height: min-content;
+    max-height: 100%;
+    position: relative;
+  }
   video {
-    width: 300px;
-    height: auto;
+    width: 100%;
+    height: min(auto, 100%);
     background: #333;
     transform: rotateY(180deg);
-    border-radius: 1em;
+    pointer-events: none;
   }
+
   .local {
+    display: flex;
     position: absolute;
     bottom: 1em;
     right: 1em;
     width: min(200px, 90%);
     z-index: 5;
+    box-shadow: 0px 0px 0px 0px var(--lightBlue);
   }
   .local:active {
     cursor: grab;
+    box-shadow: 0px 0px 0px 0.25em var(--lightBlue);
   }
   .local:not(:active) {
     transition: all 0.3s ease;
   }
   .remote {
     width: 100%;
-    height: auto;
     align-self: flex-start;
+  }
+
+  .controls {
+    position: absolute;
+    bottom: 0.5em;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  svg {
+    margin: 0 0.5em;
+    cursor: pointer;
+    stroke: var(--offWhite);
+    fill: transparent;
+    width: 24px;
+    height: 24px;
+    transition: all 0.3s ease;
+  }
+  svg:hover {
+    stroke: var(--lightBlue);
   }
 </style>
 
-<video
-  class={type}
-  bind:this={el}
-  autoplay
-  on:mousedown={toggleMouseDown}
-  on:mouseup={toggleMouseDown}
-  on:mousemove|preventDefault={handleMouseMove} />
+<div
+  class={`${type} video_wrapper`}
+  bind:this={videoWrapper}
+  on:mousedown|preventDefault={toggleMouseDown}
+  on:mouseup|preventDefault={toggleMouseDown}
+  on:mousemove|preventDefault={handleMouseMove}>
+  <video bind:this={el} autoplay />
+  {#if type == 'local'}
+    <div class="controls">
+      <div>
+        <svg viewbox="0 0 24 24" on:click={toggleAudio}>
+          {@html $fIcons[isMuted ? 'mic-off' : 'mic']}
+        </svg>
+        <svg viewbox="0 0 24 24" width="24" height="24" on:click={toggleVideo}>
+          {@html $fIcons[isVideoOff ? 'video-off' : 'video']}
+        </svg>
+      </div>
+    </div>
+  {/if}
+</div>

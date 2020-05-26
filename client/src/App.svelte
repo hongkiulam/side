@@ -95,6 +95,7 @@
     height: 100%;
     display: grid;
     grid-template-columns: minmax(300px, 2fr) 10fr;
+    grid-template-rows: 100%;
   }
   h1 {
     padding: 0 1rem;
@@ -107,7 +108,9 @@
     padding: var(--paddingS);
     display: grid;
     grid-template-columns: minmax(300px, 2fr) 8fr;
+    grid-template-rows: 100%;
     gap: var(--paddingS);
+    height: 100%;
   }
 </style>
 
