@@ -84,6 +84,7 @@
   .remote {
     width: 100%;
     height: auto;
+    align-self: flex-start;
   }
 </style>
 
