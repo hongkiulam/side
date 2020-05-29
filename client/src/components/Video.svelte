@@ -1,20 +1,26 @@
 <script>
   import { call, fIcons } from "../store/store.js";
   import childOutsideParent from "../utils/childOutsideParent.js";
-  export let stream;
   /**
-   * @type 'local' | 'remote'
+   * @isDraggable
+   * @controls
+   * @stream
    */
-  export let type;
+  export let stream;
+  export let isDraggable = false;
+  export let controls = false;
 
   let el; // instance of this element
   let videoWrapper;
   let isVideoOff = false;
   let isMuted = false;
+  let type = isDraggable ? "small" : "big";
 
+  // initialise stream
   $: if (el && el.srcObject != stream && stream) {
     el.srcObject = stream;
   }
+  // remove stream on disconnect
   $: if ($call.state == "disconnected" && el) {
     if (el.srcObject) {
       el.srcObject.getTracks().forEach(track => track.stop());
@@ -34,20 +40,20 @@
     incrementY: undefined
   };
   const toggleMouseDown = e => {
-    if (type == "local") {
+    if (isDraggable) {
       isMouseDown = !isMouseDown;
       dragPos.startX = e.clientX;
       dragPos.startY = e.clientY;
-    }
 
-    // when mouseup, reset pos of video to inside bounds
-    if (!isMouseDown) {
-      childOutsideParent(videoWrapper, videoWrapper.parentNode).forEach(
-        bound => {
-          videoWrapper.style[bound.boundingSide] =
-            videoWrapper[bound.offset] + bound.resetIncrement + "px";
-        }
-      );
+      // when mouseup, reset pos of video to inside bounds
+      if (!isMouseDown) {
+        childOutsideParent(videoWrapper, videoWrapper.parentNode).forEach(
+          bound => {
+            videoWrapper.style[bound.boundingSide] =
+              videoWrapper[bound.offset] + bound.resetIncrement + "px";
+          }
+        );
+      }
     }
   };
   const handleMouseMove = e => {
@@ -66,6 +72,7 @@
     }
   };
 
+  // handle controls
   const toggleVideo = () => {
     el.srcObject.getVideoTracks().forEach(v => (v.enabled = !v.enabled));
     isVideoOff = !isVideoOff;
@@ -93,7 +100,7 @@
     pointer-events: none;
   }
 
-  .local {
+  .small {
     display: flex;
     position: absolute;
     bottom: 1em;
@@ -102,14 +109,14 @@
     z-index: 5;
     box-shadow: 0px 0px 0px 0px var(--lightBlue);
   }
-  .local:active {
+  .small:active {
     cursor: grab;
     box-shadow: 0px 0px 0px 0.25em var(--lightBlue);
   }
-  .local:not(:active) {
+  .small:not(:active) {
     transition: all 0.3s ease;
   }
-  .remote {
+  .big {
     width: 100%;
     align-self: flex-start;
   }
@@ -141,7 +148,7 @@
   on:mouseup|preventDefault={toggleMouseDown}
   on:mousemove|preventDefault={handleMouseMove}>
   <video bind:this={el} autoplay />
-  {#if type == 'local'}
+  {#if controls}
     <div class="controls">
       <div>
         <svg viewbox="0 0 24 24" on:click={toggleAudio}>

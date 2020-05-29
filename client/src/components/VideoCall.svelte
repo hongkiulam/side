@@ -28,6 +28,6 @@
 
 <div class="videocall">
   <h2 class="oncall">On call with {$call.user.nickName}...</h2>
-  <Video stream={$localStream} type="local" />
-  <Video stream={remoteStream} type="remote" />
+  <Video stream={$localStream} isDraggable controls />
+  <Video stream={remoteStream} />
 </div>
