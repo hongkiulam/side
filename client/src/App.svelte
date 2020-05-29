@@ -5,7 +5,7 @@
   import makeOffer from "./utils/makeOffer.js";
   import closeVideoCall from "./utils/closeVideoCall.js";
   import Users from "./components/Users.svelte";
-  import VideoContainer from "./components/VideoContainer.svelte";
+  import Main from "./components/Main.svelte";
 
   // get nickName
   // let nickNameFromPrompt = prompt("Enter Nickname");
@@ -35,7 +35,11 @@
       if ($call.state == "connecting") {
         call.set({ ...$call, state: "connected" });
       } else {
-        call.set({ ...$call, state: "connecting", user: from });
+        call.set({
+          ...$call,
+          state: "connecting",
+          user: { id: from, nickName }
+        });
       }
       await getMedia(localStream, $pc, call);
       await $pc.setRemoteDescription(new RTCSessionDescription(offer));
@@ -44,7 +48,11 @@
       makeAnswer($socket, from, answer);
     } else {
       $socket.emit("closeVideoCall", from);
-      call.set({ ...$call, state: "disconnected", user: undefined });
+      call.set({
+        ...$call,
+        state: "disconnected",
+        user: { id: undefined, nickName: undefined }
+      });
     }
   });
   $socket.on("receiveAnswer", async ({ answer, from }) => {
@@ -129,6 +137,6 @@
   </div>
   <div class="app">
     <Users />
-    <VideoContainer />
+    <Main />
   </div>
 </div>

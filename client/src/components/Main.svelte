@@ -1,14 +1,6 @@
 <script>
-  import { localStream, pc, call } from "../store/store.js";
-  import Video from "./Video.svelte";
-  let remoteStream;
-
-  $: if ($pc.connectionState == "new") {
-    $pc.ontrack = ({ streams: [stream] }) => {
-      remoteStream = stream;
-    };
-  }
-  $: console.log($call);
+  import { call } from "../store/store.js";
+  import VideoCall from "./VideoCall.svelte";
 </script>
 
 <style>
@@ -20,6 +12,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
+    height: 100%;
   }
   .curtain {
     width: 100%;
@@ -53,8 +47,7 @@
 
 <div class="container">
   {#if $call.state != 'disconnected'}
-    <Video stream={$localStream} type="local" />
-    <Video stream={remoteStream} type="remote" />
+    <VideoCall />
   {:else}
     <p>Click on someone's name to start a call ~</p>
   {/if}

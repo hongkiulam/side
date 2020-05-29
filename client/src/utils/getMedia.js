@@ -15,7 +15,11 @@ const getMedia = async (localStream, pc, call) => {
     stream.getTracks().forEach((track) => pc.addTrack(track, stream));
   } catch (e) {
     handleUserMediaError(e);
-    call.set({ ...$call, state: "disconnected", user: undefined });
+    call.set({
+      ...$call,
+      state: "disconnected",
+      user: { id: undefined, nickName: undefined },
+    });
   }
 };
 

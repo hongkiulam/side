@@ -11,11 +11,12 @@
   import makeOffer from "../utils/makeOffer.js";
   import closeVideoCall from "../utils/closeVideoCall.js";
   export let socketId;
+  export let otherNickName;
   export let isSelf;
   export let hover;
 
-  $: connected = $call.state == "connected" && $call.user == socketId;
-  $: connecting = $call.state == "connecting" && $call.user == socketId;
+  $: connected = $call.state == "connected" && $call.user.id == socketId;
+  $: connecting = $call.state == "connecting" && $call.user.id == socketId;
 
   const handleClick = () => {
     if ($call.state == "disconnected") {
@@ -25,7 +26,11 @@
     }
   };
   const callUser = async () => {
-    call.set({ ...$call, user: socketId, state: "connecting" });
+    call.set({
+      ...$call,
+      user: { id: socketId, nickName: otherNickName },
+      state: "connecting"
+    });
     await getMedia(localStream, $pc, call);
     const offer = await $pc.createOffer();
     await $pc.setLocalDescription(new RTCSessionDescription(offer));
@@ -33,7 +38,7 @@
   };
 
   const hangup = () => {
-    $socket.emit("closeVideoCall", $call.user);
+    $socket.emit("closeVideoCall", $call.user.id);
     $localStream.getTracks().forEach(track => track.stop());
     closeVideoCall(call, $pc, pc);
   };
@@ -101,7 +106,7 @@
   on:click={handleClick}
   class:connected
   class:connecting
-  class:disabled={$call.state == 'connected' && $call.user != socketId}
+  class:disabled={$call.state == 'connected' && $call.user.id != socketId}
   class:isSelf
   class:hover>
   <svg

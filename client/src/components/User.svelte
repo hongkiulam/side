@@ -33,5 +33,5 @@
   on:mouseenter={toggleHover}
   on:mouseleave={toggleHover}>
   <span>{nickName}</span>
-  <CallButton {socketId} {isSelf} {hover} />
+  <CallButton {socketId} {isSelf} {hover} otherNickName={nickName} />
 </div>

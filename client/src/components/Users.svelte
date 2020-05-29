@@ -33,7 +33,7 @@
 <ul class="online_user_list">
   {#each members as { nickName='', socketId }}
     {#if nickName != null }
-    <User {socketId} isSelf={nickName==self} {nickName}/>
+    <User {socketId} isSelf={nickName==self} {nickName} />
     {/if}
   {/each}
 </ul>

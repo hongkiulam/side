@@ -7,6 +7,9 @@ export const socket = readable(io("https://side-server.herokuapp.com"));
 export const pc = writable(new RTCPeerConnection());
 export const nickName = writable("");
 export const localStream = writable();
-export const call = writable({ state: "disconnected", user: undefined });
+export const call = writable({
+  state: "disconnected",
+  user: { id: undefined, nickName: undefined },
+});
 export const fIcons = readable(icons);
 export const isMobile = readable("ontouchstart" in document.documentElement);
