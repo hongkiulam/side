@@ -1,6 +1,21 @@
 <script>
-  import { call } from "../store/store.js";
+  import { call, pc } from "../store/store.js";
+  import { fade } from "svelte/transition";
   import VideoCall from "./VideoCall.svelte";
+
+  let animationEnded = false;
+  let remoteStream;
+
+  const toggleAnimationEnded = () => {
+    animationEnded = !animationEnded;
+  };
+
+  $: if ($pc.connectionState == "new") {
+    $pc.ontrack = ({ streams: [stream] }) => {
+      remoteStream = stream;
+    };
+  }
+  $: console.table({ state: $call.state, user: $call.user.nickName });
 </script>
 
 <style>
@@ -15,41 +30,19 @@
     width: 100%;
     height: 100%;
   }
-  .curtain {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-radius: inherit;
-    transform-origin: left;
-    transform: scaleX(0);
-    z-index: 6;
-  }
-  .curtainOpen {
-    animation: curtainOpen 1s ease;
-  }
-  @keyframes curtainOpen {
-    0% {
-      transform: scaleX(1);
-      background: white;
-    }
-    40% {
-      transform: scaleX(1);
-      background: white;
-    }
-    100% {
-      transform: scaleX(0);
-      background: var(--offWhite);
-    }
-  }
 </style>
 
 <div class="container">
   {#if $call.state != 'disconnected'}
-    <VideoCall />
+    {#if animationEnded}
+      <VideoCall {remoteStream} />
+    {/if}
   {:else}
-    <p>Click on someone's name to start a call ~</p>
+    <p
+      transition:fade
+      on:outroend={toggleAnimationEnded}
+      on:introend={toggleAnimationEnded}>
+      Click on someone's name to start a call ~
+    </p>
   {/if}
-  <div class="curtain" class:curtainOpen={$call.state != 'disconnected'} />
 </div>

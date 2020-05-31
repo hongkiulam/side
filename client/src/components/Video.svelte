@@ -1,5 +1,6 @@
 <script>
   import { call, fIcons } from "../store/store.js";
+  import { scale } from "svelte/transition";
   import childOutsideParent from "../utils/childOutsideParent.js";
   /**
    * @isDraggable
@@ -33,42 +34,47 @@
   // handle video dragging
 
   let isMouseDown = false;
-  let dragPos = {
-    startX: undefined,
-    startY: undefined,
-    incrementX: undefined,
-    incrementY: undefined
-  };
+  let offset;
+  let pointerOffset;
   const toggleMouseDown = e => {
+    console.log(videoWrapper.style.left);
+    e.preventDefault();
     if (isDraggable) {
+      const parentBounds = e.target.parentNode.getBoundingClientRect();
+      const thisBounds = e.target.getBoundingClientRect();
+      offset = { left: parentBounds.left, top: parentBounds.top };
+      pointerOffset = {
+        left: e.clientX - thisBounds.left,
+        top: e.clientY - thisBounds.top
+      };
       isMouseDown = !isMouseDown;
-      dragPos.startX = e.clientX;
-      dragPos.startY = e.clientY;
-
       // when mouseup, reset pos of video to inside bounds
       if (!isMouseDown) {
-        childOutsideParent(videoWrapper, videoWrapper.parentNode).forEach(
-          bound => {
-            videoWrapper.style[bound.boundingSide] =
-              videoWrapper[bound.offset] + bound.resetIncrement + "px";
-          }
-        );
+        // if the video has been moved then we can check for outbounds
+        // this prevents the video jumping from responding to an undefined left/ top
+        videoWrapper.style.left &&
+          childOutsideParent(videoWrapper, videoWrapper.parentNode).forEach(
+            bound => {
+              videoWrapper.style[bound.boundingSide] =
+                videoWrapper[bound.offset] + bound.resetIncrement + "px";
+            }
+          );
       }
+      document.removeEventListener("mouseup", toggleMouseDown);
+      document.removeEventListener("mousemove", handleMouseMove);
+    }
+    if (isMouseDown) {
+      document.addEventListener("mouseup", toggleMouseDown);
+      document.addEventListener("mousemove", handleMouseMove);
     }
   };
   const handleMouseMove = e => {
+    e.preventDefault();
     if (isMouseDown) {
-      // get incrememnt
-      dragPos.incrementX = dragPos.startX - e.clientX;
-      dragPos.incrementY = dragPos.startY - e.clientY;
-      // set next pos values
-      dragPos.startX = e.clientX;
-      dragPos.startY = e.clientY;
-      // style
       videoWrapper.style.left =
-        videoWrapper.offsetLeft - dragPos.incrementX + "px";
+        e.clientX - offset.left - pointerOffset.left + "px";
       videoWrapper.style.top =
-        videoWrapper.offsetTop - dragPos.incrementY + "px";
+        e.clientY - offset.top - pointerOffset.top + "px";
     }
   };
 
@@ -114,7 +120,7 @@
     box-shadow: 0px 0px 0px 0.25em var(--lightBlue);
   }
   .small:not(:active) {
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
   }
   .big {
     width: 100%;
@@ -144,9 +150,8 @@
 <div
   class={`${type} video_wrapper`}
   bind:this={videoWrapper}
-  on:mousedown|preventDefault={toggleMouseDown}
-  on:mouseup|preventDefault={toggleMouseDown}
-  on:mousemove|preventDefault={handleMouseMove}>
+  on:mousedown={toggleMouseDown}
+  in:scale>
   <video bind:this={el} autoplay />
   {#if controls}
     <div class="controls">

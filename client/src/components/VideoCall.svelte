@@ -1,14 +1,8 @@
 <script>
   import { localStream, pc, call } from "../store/store.js";
+  import { fade } from "svelte/transition";
   import Video from "./Video.svelte";
-  let remoteStream;
-
-  $: if ($pc.connectionState == "new") {
-    $pc.ontrack = ({ streams: [stream] }) => {
-      remoteStream = stream;
-    };
-  }
-  $: console.log($call);
+  export let remoteStream;
 </script>
 
 <style>
@@ -26,8 +20,11 @@
   }
 </style>
 
-<div class="videocall">
-  <h2 class="oncall">On call with {$call.user.nickName}...</h2>
+<div class="videocall" in:fade>
+  <h2 class="oncall">
+    {$call.state == 'connecting' ? 'Calling' : 'On call with'}
+    {$call.user.nickName}...
+  </h2>
   <Video stream={$localStream} isDraggable controls />
   <Video stream={remoteStream} />
 </div>

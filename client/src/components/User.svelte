@@ -1,5 +1,6 @@
 <script>
   import CallButton from "./CallButton.svelte";
+  import { fly } from "svelte/transition";
   export let nickName;
   export let socketId;
   export let isSelf;
@@ -31,7 +32,9 @@
 <div
   class="online_user"
   on:mouseenter={toggleHover}
-  on:mouseleave={toggleHover}>
+  on:mouseleave={toggleHover}
+  in:fly={{ y: 20 }}
+  out:fly={{ x: 200 }}>
   <span>{nickName}</span>
   <CallButton {socketId} {isSelf} {hover} otherNickName={nickName} />
 </div>

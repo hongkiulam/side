@@ -6,6 +6,7 @@
   import closeVideoCall from "./utils/closeVideoCall.js";
   import Users from "./components/Users.svelte";
   import Main from "./components/Main.svelte";
+  import Sidebar from "./components/Sidebar.svelte";
 
   // get nickName
   // let nickNameFromPrompt = prompt("Enter Nickname");
@@ -105,11 +106,6 @@
     grid-template-columns: minmax(300px, 2fr) 10fr;
     grid-template-rows: 100%;
   }
-  h1 {
-    padding: 0 1rem;
-    font-size: 2.5em;
-    color: white;
-  }
   .app {
     background: var(--offWhite);
     border-radius: 2.5em;
@@ -133,7 +129,7 @@
 
 <div class="grid">
   <div class="menu">
-    <h1>Side</h1>
+    <Sidebar />
   </div>
   <div class="app">
     <Users />
