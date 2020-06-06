@@ -2,8 +2,8 @@ import io from "socket.io-client";
 import { writable, readable } from "svelte/store";
 import { icons } from "feather-icons";
 
-// export const socket = readable(io("https://side-server.herokuapp.com"));
-export const socket = readable(io("http://localhost:3030"));
+export const socket = readable(io("https://side-server.herokuapp.com"));
+// export const socket = readable(io("http://localhost:3030"));
 export const pc = writable(new RTCPeerConnection());
 export const nickName = writable("");
 export const localStream = writable();
