@@ -37,9 +37,9 @@
   let offset;
   let pointerOffset;
   const toggleMouseDown = e => {
-    console.log(videoWrapper.style.left);
     e.preventDefault();
-    if (isDraggable) {
+    if (e.target.tagName != "DIV") return;
+    if (isDraggable && videoWrapper == e.target) {
       const parentBounds = e.target.parentNode.getBoundingClientRect();
       const thisBounds = e.target.getBoundingClientRect();
       offset = { left: parentBounds.left, top: parentBounds.top };
@@ -50,22 +50,20 @@
       isMouseDown = !isMouseDown;
       // when mouseup, reset pos of video to inside bounds
       if (!isMouseDown) {
-        // if the video has been moved then we can check for outbounds
-        // this prevents the video jumping from responding to an undefined left/ top
-        videoWrapper.style.left &&
-          childOutsideParent(videoWrapper, videoWrapper.parentNode).forEach(
-            bound => {
-              videoWrapper.style[bound.boundingSide] =
-                videoWrapper[bound.offset] + bound.resetIncrement + "px";
-            }
-          );
+        document.removeEventListener("mouseup", toggleMouseDown);
+        document.removeEventListener("mousemove", handleMouseMove);
+        // check for outbounds
+        childOutsideParent(videoWrapper, videoWrapper.parentNode).forEach(
+          bound => {
+            videoWrapper.style[bound.boundingSide] =
+              videoWrapper[bound.offset] + bound.resetIncrement + "px";
+          }
+        );
       }
-      document.removeEventListener("mouseup", toggleMouseDown);
-      document.removeEventListener("mousemove", handleMouseMove);
-    }
-    if (isMouseDown) {
-      document.addEventListener("mouseup", toggleMouseDown);
-      document.addEventListener("mousemove", handleMouseMove);
+      if (isMouseDown) {
+        document.addEventListener("mouseup", toggleMouseDown);
+        document.addEventListener("mousemove", handleMouseMove);
+      }
     }
   };
   const handleMouseMove = e => {
@@ -78,6 +76,7 @@
     }
   };
 
+  // TODO pause video only works for sender??? FIX VIDEO JUMPING BUG WHEN CLICK
   // handle controls
   const toggleVideo = () => {
     el.srcObject.getVideoTracks().forEach(v => (v.enabled = !v.enabled));

@@ -1,5 +1,5 @@
 <script>
-  import { localStream, pc, call } from "../store/store.js";
+  import { localStream, call } from "../store/store.js";
   import { fade } from "svelte/transition";
   import Video from "./Video.svelte";
   export let remoteStream;
