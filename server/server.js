@@ -61,6 +61,10 @@ io.on("connection", (socket) => {
     console.log("\x1b[91m%s\x1b[0m", `Socket disconnected  :: ${socket.id} `);
     io.emit("newMember", members);
   });
+
+  socket.on("toggleMedia", ({ mediaType, state, to }) => {
+    socket.to(to).emit("toggleMedia", { mediaType, state });
+  });
   /**
    * Standard Socket.IO events
    */

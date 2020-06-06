@@ -1,6 +1,7 @@
 <script>
   import { call, fIcons } from "../store/store.js";
   import { scale } from "svelte/transition";
+  import { createEventDispatcher } from "svelte";
   import childOutsideParent from "../utils/childOutsideParent.js";
   /**
    * @isDraggable
@@ -37,9 +38,7 @@
   let offset;
   let pointerOffset;
   const toggleMouseDown = e => {
-    e.preventDefault();
-    if (e.target.tagName != "DIV") return;
-    if (isDraggable && videoWrapper == e.target) {
+    if (isDraggable) {
       const parentBounds = e.target.parentNode.getBoundingClientRect();
       const thisBounds = e.target.getBoundingClientRect();
       offset = { left: parentBounds.left, top: parentBounds.top };
@@ -76,15 +75,19 @@
     }
   };
 
-  // TODO pause video only works for sender??? FIX VIDEO JUMPING BUG WHEN CLICK
   // handle controls
-  const toggleVideo = () => {
-    el.srcObject.getVideoTracks().forEach(v => (v.enabled = !v.enabled));
-    isVideoOff = !isVideoOff;
-  };
-  const toggleAudio = () => {
-    el.srcObject.getAudioTracks().forEach(a => (a.enabled = !a.enabled));
-    isMuted = !isMuted;
+  const dispatch = createEventDispatcher();
+  const toggle = mediaType => {
+    switch (mediaType) {
+      case "video":
+        isVideoOff = !isVideoOff;
+        dispatch("toggle", { mediaType, state: !isVideoOff });
+        break;
+      case "audio":
+        isMuted = !isMuted;
+        dispatch("toggle", { mediaType, state: !isMuted });
+        break;
+    }
   };
 </script>
 
@@ -149,16 +152,26 @@
 <div
   class={`${type} video_wrapper`}
   bind:this={videoWrapper}
-  on:mousedown={toggleMouseDown}
+  on:mousedown|self={toggleMouseDown}
   in:scale>
   <video bind:this={el} autoplay />
   {#if controls}
     <div class="controls">
       <div>
-        <svg viewbox="0 0 24 24" on:click={toggleAudio}>
+        <svg
+          viewbox="0 0 24 24"
+          on:click={() => {
+            toggle('audio');
+          }}>
           {@html $fIcons[isMuted ? 'mic-off' : 'mic']}
         </svg>
-        <svg viewbox="0 0 24 24" width="24" height="24" on:click={toggleVideo}>
+        <svg
+          viewbox="0 0 24 24"
+          width="24"
+          height="24"
+          on:click={() => {
+            toggle('video');
+          }}>
           {@html $fIcons[isVideoOff ? 'video-off' : 'video']}
         </svg>
       </div>

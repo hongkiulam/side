@@ -1,8 +1,32 @@
 <script>
-  import { localStream, call } from "../store/store.js";
+  import { localStream, call, socket } from "../store/store.js";
   import { fade } from "svelte/transition";
   import Video from "./Video.svelte";
   export let remoteStream;
+
+  const toggle = e => {
+    const { mediaType, state } = e.detail;
+    switch (mediaType) {
+      case "video":
+        $localStream.getVideoTracks().forEach(v => (v.enabled = state));
+        $socket.emit("toggleMedia", { mediaType, state, to: $call.user.id });
+        break;
+      case "audio":
+        $localStream.getAudioTracks().forEach(a => (a.enabled = state));
+        $socket.emit("toggleMedia", { mediaType, state, to: $call.user.id });
+        break;
+    }
+  };
+  $socket.on("toggleMedia", ({ mediaType, state }) => {
+    switch (mediaType) {
+      case "video":
+        remoteStream.getVideoTracks().forEach(v => (v.enabled = state));
+        break;
+      case "audio":
+        remoteStream.getAudioTracks().forEach(a => (a.enabled = state));
+        break;
+    }
+  });
 </script>
 
 <style>
@@ -25,6 +49,6 @@
     {$call.state == 'connecting' ? 'Calling' : 'On call with'}
     {$call.user.nickName}...
   </h2>
-  <Video stream={$localStream} isDraggable controls />
+  <Video stream={$localStream} isDraggable controls on:toggle={toggle} />
   <Video stream={remoteStream} />
 </div>
