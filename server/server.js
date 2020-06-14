@@ -1,10 +1,13 @@
 const express = require("express");
 const http = require("http");
 const socketio = require("socket.io");
-
+const fetch = require("node-fetch");
+const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 3030;
 const server = http.Server(app);
+
+require("dotenv").config();
 
 const corsOptions = {
   handlePreflightRequest: (req, res) => {
@@ -17,6 +20,7 @@ const corsOptions = {
     res.end();
   },
 };
+app.use(cors());
 const io = socketio(server, corsOptions);
 server.listen(port);
 
@@ -75,4 +79,40 @@ io.on("connection", (socket) => {
       socket.emit({ playerState, seekTo, videoId });
     }
   );
+});
+
+// youtube data api custom endpoint
+const mapSearchResults = (items) => {
+  return items.map((item) => {
+    const {
+      id,
+      snippet: { channelTitle, title, thumbnails },
+    } = item;
+    return {
+      videoId: id.videoId,
+      channelTitle,
+      thumbnail: thumbnails.default,
+      title,
+    };
+  });
+};
+
+app.use("/ytsearch", async (req, res) => {
+  const query = req.query.q;
+  const params = {
+    part: "snippet",
+    maxResults: 50,
+    type: "video",
+  };
+  let searchUrl = `https://www.googleapis.com/youtube/v3/search?key=${process.env.YOUTUBE_API_KEY}`;
+  searchUrl += `&part=${params.part}`;
+  searchUrl += `&maxResults=${params.maxResults}`;
+  searchUrl += `&type=${params.type}`;
+  searchUrl += `&q=${query}`;
+  fetch(searchUrl).then((search) => {
+    search.json().then((result) => {
+      const mappedResult = mapSearchResults(result.items);
+      res.send(mappedResult);
+    });
+  });
 });
