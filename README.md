@@ -1,5 +1,7 @@
 # Side - Video Chat App w/ Youtube Player
 
+Try it [live](side.netlify.app)
+
 ### Built using Svelte, WebRTC, Node.js, Express, Socket.IO
 
 This is a repo for my Side Video Chat app, with the front-end code contained within `client`, and back-end code contained within `server`.
@@ -14,3 +16,4 @@ After learning about WebRTC and playing around with it while at work, I was insp
 - Quickly and easily switch between video chat and 'youtube' chat
 - Use Youtube Data API to search for videos and directly load them into the player
 - Synchronise Youtube playback between peers including play, pause and seeking
+- Deploy front-end on Netlify and back-end on Heroku
