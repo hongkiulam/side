@@ -17,3 +17,10 @@ After learning about WebRTC and playing around with it while at work, I was insp
 - Use Youtube Data API to search for videos and directly load them into the player
 - Synchronise Youtube playback between peers including play, pause and seeking
 - Deploy front-end on Netlify and back-end on Heroku
+
+### TODO
+
+[ ] - Create logo
+[ ] - Change up the UI?
+[ ] - Youtube stays synced in the background i.e. when switched back to video mode
+[ ] - Save nickname in localStorage and ability to change/ update it
