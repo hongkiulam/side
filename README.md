@@ -1,6 +1,6 @@
 # Side - Video Chat App w/ Youtube Player
 
-Try it [live](side.netlify.app)
+Try it live: [https://side.netlify.app](https://side.netlify.app)
 
 ### Built using Svelte, WebRTC, Node.js, Express, Socket.IO
 
