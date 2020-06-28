@@ -9,15 +9,16 @@
   import Landing from "./components/Landing.svelte";
 
   // get nickName
-  // let nickNameFromPrompt = prompt("Enter Nickname");
-  // while (nickNameFromPrompt == "") {
-  //   nickNameFromPrompt = prompt("Enter Nickname");
-  // }
-  nickName.set(
-    Math.random()
-      .toString(36)
-      .substring(7)
-  );
+  let nickNameFromPrompt = prompt("Enter Nickname");
+  while (nickNameFromPrompt == "") {
+    nickNameFromPrompt = prompt("Enter Nickname");
+  }
+  nickName.set(nickNameFromPrompt);
+  // nickName.set(
+  //   Math.random()
+  //     .toString(36)
+  //     .substring(7)
+  // );
   // join server
   $socket.emit("join", $nickName);
 
