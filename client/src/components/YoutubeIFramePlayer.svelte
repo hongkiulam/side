@@ -47,6 +47,9 @@
       // stop tracking time when not playing
       clearInterval(checkInterval);
     }
+    if (e.data == 0) {
+      player.stopVideo();
+    }
     // put e.data in state for use elsewhere
     playerState = e.data;
     console.log(e.data);
@@ -97,8 +100,7 @@
     if (playerState == 1) {
       player.pauseVideo();
       $socket.emit("youtubePlayer", { playerState: 2, to: $call.user.id });
-    }
-    if (playerState == 2) {
+    } else {
       player.playVideo();
       $socket.emit("youtubePlayer", { playerState: 1, to: $call.user.id });
     }
@@ -154,7 +156,7 @@
     opacity: 0.3;
   }
   .seeker {
-    background: rgba(255,255,255,0.5);
+    background: rgba(255, 255, 255, 0.5);
     height: 10px;
     width: 100%;
     transition: all 0.3s ease;
