@@ -27,6 +27,7 @@
   .title{
     padding:0 var(--paddingS);
     margin-bottom: 1em;
+    margin-top: 0.5em;
   }
   h2{
     font-size: 2em;
@@ -86,10 +87,25 @@
   /* .sliding_bar.right{
     left:50%;
   } */
+
+  img{
+    line-height: 4em;
+    height: 2em;
+    display: inline-block;
+    margin-right: 1em;
+  }
+  .logo_title_container{
+    display: flex;
+    align-items: center;
+    margin-bottom:1em;
+  }
 </style>
 
 <div class="container">
-<h2 class="title">Side</h2>
+<div class="logo_title_container">
+<img src="/favicon.png" alt="logo"/>
+<h2>Side Video Chat</h2>
+</div>
 
 <h3 class="title">Call Type</h3>
 <div class="call_type_switcher" class:youtube={$callType == 'youtube'}>

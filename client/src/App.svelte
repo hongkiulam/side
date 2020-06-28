@@ -99,7 +99,7 @@
     --baseGreen: #5ab188;
     --darkBlue: #00717a;
     --lightBlue: #c7f1f5;
-    --offWhite: #fffaf0;
+    --offWhite: #fff7e8;
     --offBlack: #383838;
     --callGreen: #4da515;
     --callRed: #a51515;
