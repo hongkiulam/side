@@ -20,7 +20,7 @@ After learning about WebRTC and playing around with it while at work, I was insp
 
 ### TODO
 
-[ ] - Create logo
-[ ] - Change up the UI?
-[ ] - Youtube stays synced in the background i.e. when switched back to video mode
-[ ] - Save nickname in localStorage and ability to change/ update it
+- [ ] Create logo
+- [ ] Change up the UI?
+- [ ] Youtube stays synced in the background i.e. when switched back to video mode
+- [ ] Save nickname in localStorage and ability to change/ update it
