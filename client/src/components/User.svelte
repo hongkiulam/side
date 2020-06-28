@@ -22,7 +22,7 @@
     align-items: center;
   }
   .online_user:hover {
-    background: lightblue;
+    background: var(--lightBlue);
   }
   span {
     padding: var(--paddingS);

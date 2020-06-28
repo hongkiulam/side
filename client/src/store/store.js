@@ -13,3 +13,4 @@ export const call = writable({
 });
 export const fIcons = readable(icons);
 export const isMobile = readable("ontouchstart" in document.documentElement);
+export const callType = writable("video");

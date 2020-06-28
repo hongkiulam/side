@@ -1,7 +1,8 @@
 <script>
-  import { call, pc } from "../store/store.js";
+  import { call, pc, callType } from "../store/store.js";
   import { fade } from "svelte/transition";
   import VideoCall from "./VideoCall.svelte";
+  import YoutubeCall from "./YoutubeCall.svelte";
 
   let animationEnded = false;
   let remoteStream;
@@ -15,7 +16,7 @@
       remoteStream = stream;
     };
   }
-  $: console.table({ state: $call.state, user: $call.user.nickName });
+  $: console.log("state:", $call.state, "user:", $call.user.nickName);
 </script>
 
 <style>
@@ -35,7 +36,14 @@
 <div class="container">
   {#if $call.state != 'disconnected'}
     {#if animationEnded}
-      <VideoCall {remoteStream} />
+      <!-- {#if $call.state == 'disconnected'}
+    {#if !animationEnded} -->
+      {#if $callType == 'video'}
+        <VideoCall {remoteStream} />
+      {/if}
+      {#if $callType == 'youtube'}
+        <YoutubeCall {remoteStream} />
+      {/if}
     {/if}
   {:else}
     <p

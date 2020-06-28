@@ -4,9 +4,9 @@
   import makeAnswer from "./utils/makeAnswer.js";
   import makeOffer from "./utils/makeOffer.js";
   import closeVideoCall from "./utils/closeVideoCall.js";
-  import Users from "./components/Users.svelte";
-  import Main from "./components/Main.svelte";
   import Sidebar from "./components/Sidebar.svelte";
+  import Main from "./components/Main.svelte";
+  import Landing from "./components/Landing.svelte";
 
   // get nickName
   // let nickNameFromPrompt = prompt("Enter Nickname");
@@ -73,6 +73,13 @@
     closeVideoCall(call, $pc, pc);
     alert("This person is already in a call!");
   });
+
+  let connectedToServer = false;
+  $socket.on("newMember", () => {
+    setTimeout(() => {
+      connectedToServer = true;
+    }, 1500);
+  });
 </script>
 
 <style>
@@ -103,7 +110,7 @@
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-columns: minmax(300px, 2fr) 10fr;
+    /* grid-template-columns: minmax(300px, 2fr) 10fr; */
     grid-template-rows: 100%;
   }
   .app {
@@ -128,11 +135,11 @@
 </svelte:head>
 
 <div class="grid">
-  <div class="menu">
-    <Sidebar />
-  </div>
+  {#if !connectedToServer}
+    <Landing />
+  {/if}
   <div class="app">
-    <Users />
+    <Sidebar />
     <Main />
   </div>
 </div>
